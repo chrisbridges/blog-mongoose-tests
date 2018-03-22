@@ -31,3 +31,28 @@ function seedPostData () {
   console.log(seedData);
   return BlogPost.insertMany(seedData);
 }
+
+function tearDownDB () {
+  console.warn('Deleting database');
+  return mongoose.connection.dropDatabase();
+}
+
+describe('BlogPost Resource API', function () {
+
+  before(function () {
+    return runServer(TEST_DATABASE_URL);
+  });
+
+  beforeEach(function () {
+    return seedPostData();
+  });
+
+  afterEach(function () {
+    return tearDownDB();
+  });
+
+  after(function () {
+    return closeServer();
+  });
+
+});
