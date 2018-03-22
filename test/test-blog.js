@@ -55,4 +55,30 @@ describe('BlogPost Resource API', function () {
     return closeServer();
   });
 
+  describe('Test GET Endpoint', function() {
+    it('should return all posts', function () {
+      let res;
+      return chai.request(app)
+        .get('/posts')
+        .then(function(_res) {
+          res = _res;
+          expect(res).to.have.status(200);
+          expect(res.body.blogposts).to.have.length.of.at.least(1);
+          return BlogPost.count();
+        })
+        .then(function(count) {
+          expect(res.body.blogposts).to.have.length.of(count);
+        });
+    });
+
+    it('should return blog posts with the proper fields', function () {
+      let resPost;
+      return chai.request(app)
+        .get('/posts')
+        .then(function(res) {
+          
+        })
+    });
+  });
+
 });
