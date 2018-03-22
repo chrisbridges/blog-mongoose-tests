@@ -19,8 +19,15 @@ function seedPostData () {
   const seedData = [];
 
   for (let i = 0; i < 10; i++) {
-    seedData.push(generatePostData());
+    seedData.push({
+      author: {
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName()
+      },
+      title: faker.lorem.words(),
+      content: faker.lorem.paragraph()
+    });
   }
-  
+  console.log(seedData);
   return BlogPost.insertMany(seedData);
 }
