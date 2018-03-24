@@ -13,7 +13,6 @@ const {app, runServer, closeServer} = require('../server');
 const {TEST_DATABASE_URL} = require('../config'); // declare TestDatabaseURL in config.js
 
 chai.use(chaiHttp);
-console.log(expect);
 function seedPostData () {
   console.info('seeding post data');
   const seedData = [];
@@ -126,7 +125,6 @@ describe('BlogPost Resource API', function () {
           return BlogPost.findById(res.body.id);
         })
         .then(function(post) {
-          console.log(post);
           expect(post.title).to.equal(newPost.title);
           expect(post.content).to.equal(newPost.content);
           expect(JSON.stringify(post.author)).to.equal(JSON.stringify(newPost.author));
