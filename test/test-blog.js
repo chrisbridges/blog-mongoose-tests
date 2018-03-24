@@ -13,7 +13,7 @@ const {app, runServer, closeServer} = require('../server');
 const {TEST_DATABASE_URL} = require('../config'); // declare TestDatabaseURL in config.js
 
 chai.use(chaiHttp);
-
+console.log(expect);
 function seedPostData () {
   console.info('seeding post data');
   const seedData = [];
@@ -28,7 +28,6 @@ function seedPostData () {
       content: faker.lorem.paragraph()
     });
   }
-  console.log(seedData);
   return BlogPost.insertMany(seedData);
 }
 
@@ -64,11 +63,11 @@ describe('BlogPost Resource API', function () {
         .then(function(_res) {
           res = _res;
           expect(res).to.have.status(200);
-          expect(res.body).to.have.length.of.at.least(1);
+          expect(res.body).to.have.lengthOf.at.least(1);
           return BlogPost.count();
         })
         .then(function(count) {
-          expect(res.body).to.have.length.of(count);
+          expect(res.body).to.have.lengthOf(count);
         });
     });
 
@@ -80,7 +79,7 @@ describe('BlogPost Resource API', function () {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
           expect(res.body).to.be.a('array');
-          expect(res.body).to.have.length.of.at.least(1);
+          expect(res.body).to.have.lengthOf.at.least(1);
 
           res.body.forEach(function(post) {
             expect(post).to.be.a('object');
@@ -92,7 +91,7 @@ describe('BlogPost Resource API', function () {
         })
         .then(function (post) {
           expect(resPost.id).to.be.equal(post.id);
-          expect(resPost.author).to.be.equal(post.author);
+          expect(resPost.author).to.be.equal(`${post.author.firstName} ${post.author.lastName}`);
           expect(resPost.content).to.be.equal(post.content);
           expect(resPost.title).to.be.equal(post.title);
         });
@@ -105,8 +104,8 @@ describe('BlogPost Resource API', function () {
 
       const newPost = {
         author: {
-          firstName: 'Chris',
-          lastName: 'Bridges'
+          lastName: 'Bridges',
+          firstName: 'Chris'
         },
         title: 'Title title title',
         content: 'lorem ipsum lorem ipsum'
@@ -120,16 +119,17 @@ describe('BlogPost Resource API', function () {
           expect(res).to.be.json;
           expect(res.body).to.be.a('object');
           expect(res.body).to.include.keys('title', 'content', 'author');
-          expect(res.body.author).to.equal(newPost.author);
+          expect(res.body.author).to.equal(`${newPost.author.firstName} ${newPost.author.lastName}`);
           expect(res.body.title).to.equal(newPost.title);
           expect(res.body.content).to.equal(newPost.content);
           
           return BlogPost.findById(res.body.id);
         })
         .then(function(post) {
+          console.log(post);
           expect(post.title).to.equal(newPost.title);
           expect(post.content).to.equal(newPost.content);
-          expect(post.author).to.equal(newPost.author);
+          expect(JSON.stringify(post.author)).to.equal(JSON.stringify(newPost.author));
         });
 
     });
